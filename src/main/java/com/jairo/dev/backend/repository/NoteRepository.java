@@ -10,8 +10,8 @@ import java.util.Set;
 
 @Repository
 public interface NoteRepository extends CrudRepository<Note, Long> {
-    List<Note> findByIsArchivedTrue();
-    List<Note> findByIsArchivedFalse();
+    List<Note> getAllByIsArchivedFalse();
+    List<Note> getAllByIsArchivedTrue();
 
     List<Note> findByCategoriesIn(Set<Category> categories);
 }

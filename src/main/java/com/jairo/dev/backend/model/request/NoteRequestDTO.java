@@ -10,6 +10,7 @@ import java.util.List;
 @AllArgsConstructor
 @Data
 public class NoteRequestDTO {
+    private Long id;
     private String title;
     private String content;
     private List<Long> categoryIds;

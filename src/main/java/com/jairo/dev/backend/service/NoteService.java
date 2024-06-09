@@ -21,6 +21,7 @@ public class NoteService {
     private final NoteRepository noteRepository;
     private final CategoryService categoryService;
 
+    @Transactional(readOnly = true)
     public List<Note> findAll() {
         return (List<Note>) noteRepository.findAll();
     }
@@ -39,38 +40,53 @@ public class NoteService {
         return noteRepository.save(note);
     }
 
+    @Transactional(readOnly = true)
     public Note findById(Long id) {
         return noteRepository.findById(id).orElse(null);
     }
 
-    public Note update(Note note){
+    @Transactional
+    public Note update(NoteRequestDTO noteDTO){
+        Note note = noteRepository.findById(noteDTO.getId()).orElseThrow();
+        note.setTitle(noteDTO.getTitle());
+        note.setContent(noteDTO.getContent());
+        Set<Category> categories = new HashSet<>();
+        for(Long categoryId : noteDTO.getCategoryIds()){
+            categories.add(categoryService.findById(categoryId));
+        }
         return noteRepository.save(note);
     }
 
+    @Transactional
     public void delete(Long id){
         noteRepository.deleteById(id);
     }
 
+    @Transactional(readOnly = true)
     public List<Note> getArchivedNotes(){
-        return noteRepository.findByIsArchivedTrue();
+        return noteRepository.getAllByIsArchivedTrue();
     }
 
+    @Transactional(readOnly = true)
     public List<Note> getUnarchivedNotes(){
-        return noteRepository.findByIsArchivedFalse();
+        return noteRepository.getAllByIsArchivedFalse();
     }
 
+    @Transactional
     public void archiveNoteById(Long id){
         Note note = noteRepository.findById(id).orElseThrow();
         note.setIsArchived(true);
         noteRepository.save(note);
     }
 
+    @Transactional
     public void unarchiveNoteById(Long id){
         Note note = noteRepository.findById(id).orElseThrow();
         note.setIsArchived(false);
         noteRepository.save(note);
     }
 
+    @Transactional(readOnly = true)
     public List<Note> getNotesByCategories(Set<Category> categories){
         return noteRepository.findByCategoriesIn(categories);
     }

@@ -39,7 +39,7 @@ public class NoteController {
     }
 
     @PutMapping("/note")
-    public ResponseEntity<Note> updateNote(@RequestBody Note note) {
+    public ResponseEntity<Note> updateNote(@RequestBody NoteRequestDTO note) {
         return ResponseEntity.ok(noteService.update(note));
     }
 
